@@ -1,16 +1,22 @@
 import WebGLView from './webgl/WebGLView';
+var FontFaceObserver = require('fontfaceobserver');
+
 
 export default class App {
 
 	constructor() {
+		this.fontLoader = new FontFaceObserver('Oswald');
 
 	}
 
 	init() {
-		this.initWebGL();
-		this.addListeners();
-		this.animate();
-		this.resize();
+		this.fontLoader.load().then(() => {
+
+			this.initWebGL();
+			this.addListeners();
+			this.animate();
+			this.resize();
+		});
 	}
 
 	initWebGL() {

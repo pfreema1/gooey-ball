@@ -6,6 +6,7 @@ import fullScreenTriFrag from '../../shaders/fullScreenTri.frag';
 import fullScreenTriVert from '../../shaders/fullScreenTri.vert';
 import OrbitControls from 'three-orbitcontrols';
 import TweenMax from 'TweenMax';
+import TextCanvas from './TextCanvas';
 
 function remap(t, old_min, old_max, new_min, new_max) {
 	let old_range = old_max - old_min;
@@ -30,11 +31,15 @@ export default class WebGLView {
 	async init() {
 		this.initThree();
 		this.initBgScene();
-		this.initObject();
-		this.initLights();
 		this.initTweakPane();
 		await this.loadTextMesh();
+		this.setupTextCanvas();
 		this.initRenderTri();
+	}
+
+	setupTextCanvas() {
+		this.textCanvas = new TextCanvas(this);
+		console.log(this.textCanvas);
 	}
 
 	initTweakPane() {
@@ -118,6 +123,10 @@ export default class WebGLView {
 				uResolution: { value: resolution },
 				uTime: {
 					value: 0.0
+				},
+				uTextCanvas: {
+					type: 't',
+					value: this.textCanvas.texture
 				}
 			}
 		});
@@ -148,26 +157,6 @@ export default class WebGLView {
 		this.bgScene = new THREE.Scene();
 	}
 
-	initLights() {
-		this.pointLight = new THREE.PointLight(0xff0000, 1, 100);
-		this.pointLight.position.set(0, 0, 50);
-		this.bgScene.add(this.pointLight);
-	}
-
-	initObject() {
-		let geo = new THREE.TetrahedronBufferGeometry(10, 0);
-		let mat = new THREE.MeshPhysicalMaterial({
-			roughness: 0.5,
-			metalness: 0.3,
-			reflectivity: 1,
-			clearcoat: 1
-		});
-		this.tetra = new THREE.Mesh(geo, mat);
-		console.log('tetra:  ', this.tetra);
-
-		// this.bgScene.add(this.tetra);
-	}
-
 	resize() {
 		if (!this.renderer) return;
 		this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -184,12 +173,14 @@ export default class WebGLView {
 		if (this.trackball) this.trackball.handleResize();
 	}
 
-	updateTetra() {
-		this.tetra.rotation.y += this.PARAMS.rotSpeed;
-	}
-
 	updateTextMesh() {
 		this.textMesh.rotation.y += this.PARAMS.rotSpeed;
+	}
+
+	updateTextCanvas(time) {
+		this.textCanvas.textLine.update(time);
+		this.textCanvas.textLine.draw();
+		this.textCanvas.texture.needsUpdate = true;
 	}
 
 	update() {
@@ -210,10 +201,19 @@ export default class WebGLView {
 			this.updateTextMesh();
 		}
 
+		if (this.textCanvas) {
+			this.updateTextCanvas(time);
+
+			// console.log('this.bgRenderTarget.texture:  ', this.bgRenderTarget.texture);
+			// console.log('this.textCanvas.texture:  ', this.textCanvas.texture);
+		}
+
 		if (this.trackball) this.trackball.update();
 	}
 
 	draw() {
+
+
 		this.renderer.setRenderTarget(this.bgRenderTarget);
 		this.renderer.render(this.bgScene, this.bgCamera);
 		this.renderer.setRenderTarget(null);
