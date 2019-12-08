@@ -27,8 +27,8 @@ export default class TextCanvas {
         let textLineCount = Math.ceil(this.height / fontSize) + 1;
         let textLineHeight = fontSize;
         let snippetPadding = 45;
-        let scrollSpeed = -1;
-        this.textLine = new TextLine(0, this.height * 0.5, textSnippetWidth, snippetPadding, scrollSpeed, 1, this.ctx, fontSize);
+        let scrollSpeed = 3;
+        this.textLine = new TextLine(0, this.height * 0.5, textSnippetWidth, snippetPadding, scrollSpeed, -1, this.ctx, fontSize);
 
     }
 }

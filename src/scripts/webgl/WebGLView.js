@@ -7,6 +7,7 @@ import fullScreenTriVert from '../../shaders/fullScreenTri.vert';
 import OrbitControls from 'three-orbitcontrols';
 import TweenMax from 'TweenMax';
 import TextCanvas from './TextCanvas';
+import Blob from './Blob';
 
 function remap(t, old_min, old_max, new_min, new_max) {
 	let old_range = old_max - old_min;
@@ -34,7 +35,12 @@ export default class WebGLView {
 		this.initTweakPane();
 		await this.loadTextMesh();
 		this.setupTextCanvas();
+		this.setupBlob();
 		this.initRenderTri();
+	}
+
+	setupBlob() {
+		this.blob = new Blob();
 	}
 
 	setupTextCanvas() {
