@@ -2,6 +2,8 @@
 
 import * as THREE from 'three';
 import noise from '../utils/perlin.js';
+import customNormalVert from '../../shaders/customNormal.vert';
+import customNormalFrag from '../../shaders/customNormal.frag';
 
 export default class Blob {
   constructor() {
@@ -15,7 +17,11 @@ export default class Blob {
     this.camera.position.z = 5;
 
     this.geo = new THREE.SphereGeometry(1, 128, 128);
-    this.material = new THREE.MeshNormalMaterial();
+    // this.material = new THREE.MeshNormalMaterial();
+    this.material = new THREE.ShaderMaterial({
+      fragmentShader: customNormalFrag,
+      vertexShader: customNormalVert
+    });
 
     this.sphere = new THREE.Mesh(this.geo, this.material);
 

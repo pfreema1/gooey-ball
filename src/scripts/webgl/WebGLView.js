@@ -217,14 +217,14 @@ export default class WebGLView {
 
   draw() {
     if (this.blob) {
-      this.renderer.setRenderTarget(this.blob.renderTarget);
+      //   this.renderer.setRenderTarget(this.blob.renderTarget);
       this.renderer.render(this.blob.scene, this.blob.camera);
     }
 
-    this.renderer.setRenderTarget(this.bgRenderTarget);
-    this.renderer.render(this.bgScene, this.bgCamera);
-    this.renderer.setRenderTarget(null);
+    // this.renderer.setRenderTarget(this.bgRenderTarget);
+    // this.renderer.render(this.bgScene, this.bgCamera);
+    // this.renderer.setRenderTarget(null);
 
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
   }
 }
