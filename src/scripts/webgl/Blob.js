@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import noise from '../utils/perlin.js';
 import customNormalVert from '../../shaders/customNormal.vert';
 import customNormalFrag from '../../shaders/customNormal.frag';
+import TweenMax from 'TweenMax';
 
 const map = THREE.Math.mapLinear;
 
@@ -45,7 +46,12 @@ export default class Blob {
     this.k = 1; // number of spikeys
     this.atten = 0.3; // strength of spikeys
 
-    this.setupPane(pane, params);
+    // this.setupPane(pane, params);
+
+    this.goalPos = {
+      x: null,
+      y: null
+    };
 
     this.setupMouseListener();
   }
@@ -64,6 +70,9 @@ export default class Blob {
 
     this.k = map(this.mouse.x, -1, 1, -4, 4);
     this.atten = map(this.mouse.x, -1, 1, -1, 1);
+
+    this.goalPos.x = map(this.mouse.x, -1, 1, -0.2, 0.2);
+    this.goalPos.y = map(this.mouse.y, -1, 1, -0.2, 0.2);
   }
 
   setupPane(pane, params) {
@@ -89,12 +98,27 @@ export default class Blob {
       });
   }
 
+  moveSphereToGoalPos() {
+    // let moveSpeed = 0.002;
+
+    // if (this.sphere.position.x < this.goalPos.x - moveSpeed) {
+    //   this.sphere.position.x += moveSpeed;
+    // } else if (this.sphere.position.x > this.goalPos.x) {
+    //   this.sphere.position.x -= moveSpeed;
+    // }
+
+    TweenMax.to(this.sphere.position, 5.5, {
+      x: this.goalPos.x,
+      y: this.goalPos.y
+      //   ease: Circ.easeInOut
+    });
+  }
+
   update() {
     let time = performance.now() * 0.001;
+    this.moveSphereToGoalPos();
 
     // go through vertices and reposition them
-    // this.k = 1; // number of spikeys
-    // this.atten = 0.3; // strength of spikeys
     for (let i = 0; i < this.sphere.geometry.vertices.length; i++) {
       let p = this.sphere.geometry.vertices[i];
       p.normalize().multiplyScalar(

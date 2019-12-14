@@ -33,7 +33,7 @@ export default class WebGLView {
   async init() {
     this.initThree();
     this.initBgScene();
-    this.initTweakPane();
+    // this.initTweakPane();
     await this.loadTextMesh();
     this.setupTextCanvas();
     this.setupBlob();
