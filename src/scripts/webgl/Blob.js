@@ -68,8 +68,8 @@ export default class Blob {
     this.mouse.x = (clientX / this.width) * 2 - 1;
     this.mouse.y = -(clientY / this.height) * 2 + 1;
 
-    this.k = map(this.mouse.x, -1, 1, -4, 4);
-    this.atten = map(this.mouse.x, -1, 1, -1, 1);
+    this.k = map(this.mouse.x, -1, 1, -2, 2);
+    this.atten = map(this.mouse.x, -1, 1, -0.8, 0.8);
 
     this.goalPos.x = map(this.mouse.x, -1, 1, -0.2, 0.2);
     this.goalPos.y = map(this.mouse.y, -1, 1, -0.2, 0.2);
