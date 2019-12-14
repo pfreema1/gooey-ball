@@ -23,10 +23,10 @@ export default class Blob {
       vertexShader: customNormalVert,
       uniforms: {
         scale: {
-          value: 0.1
+          value: 0.33
         },
         power: {
-          value: 5.0
+          value: 7.07
         }
       }
     });

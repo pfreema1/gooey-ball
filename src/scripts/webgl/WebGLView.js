@@ -23,8 +23,8 @@ export default class WebGLView {
     this.app = app;
     this.PARAMS = {
       rotSpeed: 0.05,
-      blobScale: 0.1,
-      blobPower: 5.0
+      blobScale: 0.33,
+      blobPower: 7.07
     };
 
     this.init();
