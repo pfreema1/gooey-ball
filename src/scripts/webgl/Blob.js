@@ -5,6 +5,8 @@ import noise from '../utils/perlin.js';
 import customNormalVert from '../../shaders/customNormal.vert';
 import customNormalFrag from '../../shaders/customNormal.frag';
 
+const map = THREE.Math.mapLinear;
+
 export default class Blob {
   constructor(pane, params) {
     this.scene = new THREE.Scene();
@@ -14,7 +16,7 @@ export default class Blob {
       1,
       20
     );
-    this.camera.position.z = 5;
+    this.camera.position.z = 4.5;
 
     this.geo = new THREE.SphereGeometry(1, 128, 128);
     // this.material = new THREE.MeshNormalMaterial();
@@ -23,10 +25,10 @@ export default class Blob {
       vertexShader: customNormalVert,
       uniforms: {
         scale: {
-          value: 0.1
+          value: 0.36
         },
         power: {
-          value: 5.0
+          value: 2.39
         }
       }
     });
@@ -35,12 +37,33 @@ export default class Blob {
 
     this.scene.add(this.sphere);
 
-    this.renderTarget = new THREE.WebGLRenderTarget(
-      window.innerWidth,
-      window.innerHeight
-    );
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+
+    this.renderTarget = new THREE.WebGLRenderTarget(this.width, this.height);
+
+    this.k = 1; // number of spikeys
+    this.atten = 0.3; // strength of spikeys
 
     this.setupPane(pane, params);
+
+    this.setupMouseListener();
+  }
+
+  setupMouseListener() {
+    this.mouse = {
+      x: null,
+      y: null
+    };
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+  }
+
+  onMouseMove({ clientX, clientY }) {
+    this.mouse.x = (clientX / this.width) * 2 - 1;
+    this.mouse.y = -(clientY / this.height) * 2 + 1;
+
+    this.k = map(this.mouse.x, -1, 1, -4, 4);
+    this.atten = map(this.mouse.x, -1, 1, -1, 1);
   }
 
   setupPane(pane, params) {
@@ -70,11 +93,14 @@ export default class Blob {
     let time = performance.now() * 0.001;
 
     // go through vertices and reposition them
-    let k = 1;
+    // this.k = 1; // number of spikeys
+    // this.atten = 0.3; // strength of spikeys
     for (let i = 0; i < this.sphere.geometry.vertices.length; i++) {
       let p = this.sphere.geometry.vertices[i];
       p.normalize().multiplyScalar(
-        1 + 0.3 * noise.perlin3(p.x * k, p.y * k, p.z * k + time)
+        1 +
+          this.atten *
+            noise.perlin3(p.x * this.k, p.y * this.k, p.z * this.k + time)
       );
     }
 

@@ -23,8 +23,8 @@ export default class WebGLView {
     this.app = app;
     this.PARAMS = {
       rotSpeed: 0.05,
-      blobScale: 0.1,
-      blobPower: 5.0
+      blobScale: 0.36,
+      blobPower: 2.39
     };
 
     this.init();
@@ -188,7 +188,7 @@ export default class WebGLView {
 
   updateTextCanvas(time) {
     this.textCanvas.textLine.update(time);
-    this.textCanvas.textLine.draw();
+    this.textCanvas.textLine.draw(time);
     this.textCanvas.texture.needsUpdate = true;
   }
 
@@ -219,14 +219,14 @@ export default class WebGLView {
 
   draw() {
     if (this.blob) {
-      // this.renderer.setRenderTarget(this.blob.renderTarget);
+      this.renderer.setRenderTarget(this.blob.renderTarget);
       this.renderer.render(this.blob.scene, this.blob.camera);
     }
 
-    // this.renderer.setRenderTarget(this.bgRenderTarget);
-    // this.renderer.render(this.bgScene, this.bgCamera);
-    // this.renderer.setRenderTarget(null);
+    this.renderer.setRenderTarget(this.bgRenderTarget);
+    this.renderer.render(this.bgScene, this.bgCamera);
+    this.renderer.setRenderTarget(null);
 
-    // this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
   }
 }

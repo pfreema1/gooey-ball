@@ -18,11 +18,20 @@ void main() {
 
     // create refraction of textCanvas using normal
     float refractAtten = 0.06;
-    vec3 refractVec = refract(vec3(0.0, 0.0, 1.0), normal, 0.05) * refractAtten;
-    vec4 refractColor = texture2D(uTextCanvas, uv + refractVec.xy);
+    vec3 refractVec1 = refract(vec3(0.0, 0.0, 1.0), normal, 0.05) * refractAtten;
+    vec3 refractVec2 = refract(vec3(0.7, 0.0, 1.0), normal, 0.05) * refractAtten;
+    vec3 refractVec3 = refract(vec3(-0.7, 0.0, 1.0), normal, 0.05) * refractAtten;
+    vec4 refractColor1 = texture2D(uTextCanvas, uv + refractVec1.xy);
+    vec4 refractColor2 = texture2D(uTextCanvas, uv + refractVec2.xy);
+    vec4 refractColor3 = texture2D(uTextCanvas, uv + refractVec3.xy);
 
-    // if normalColor is black, just return the normalColor and not the refractColor
-    color = mix(normalColor, refractColor, normalColor.r);
+    vec4 chromAberrColor = vec4(refractColor1.r, refractColor2.g, refractColor3.b, 1.0);
+
+    // separate out the background and the textcanvas 
+    color = mix(normalColor, chromAberrColor, step(0.01, normalColor.r));
+
+    // mix in a little shading
+    color = mix(normalColor, color, normalColor.b);
 
     gl_FragColor = vec4(color);
 }
